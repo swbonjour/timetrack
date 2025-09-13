@@ -1,11 +1,21 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { ConfigService } from '@nestjs/config';
+import { ConfigurationType } from './config/configuration.interface';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.setGlobalPrefix(process.env.GLOBAL_PREFIX ?? 'api/v1');
+  const config = app.get(ConfigService<ConfigurationType>);
 
-  await app.listen(process.env.PORT ?? 3000);
+  app.setGlobalPrefix(
+    (config.getOrThrow<ConfigurationType>('global_prefix', {
+      infer: true,
+    }) as string) ?? 'api/v1',
+  );
+
+  await app.listen(
+    config.getOrThrow<ConfigurationType>('port', { infer: true }) as number,
+  );
 }
 void bootstrap();
