@@ -9,13 +9,15 @@ async function bootstrap() {
   const config = app.get(ConfigService<ConfigurationType>);
 
   app.setGlobalPrefix(
-    (config.getOrThrow<ConfigurationType>('global_prefix', {
-      infer: true,
-    }) as string) ?? 'api/v1',
+    String(
+      config.getOrThrow<ConfigurationType>('global_prefix', {
+        infer: true,
+      }),
+    ),
   );
 
   await app.listen(
-    config.getOrThrow<ConfigurationType>('port', { infer: true }) as number,
+    Number(config.getOrThrow<ConfigurationType>('port', { infer: true })),
   );
 }
 void bootstrap();

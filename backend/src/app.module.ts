@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { ConfigModule } from '@nestjs/config';
 import configuration from './config/configuration';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import databaseConfig from './db/typeorm';
 
 @Module({
   imports: [
@@ -10,6 +12,7 @@ import configuration from './config/configuration';
       isGlobal: true,
       load: [configuration],
     }),
+    TypeOrmModule.forRootAsync(databaseConfig.asProvider()),
   ],
   controllers: [AppController],
 })
